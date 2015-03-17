@@ -1,0 +1,40 @@
+# Excess
+checkboxGroupInput('id2', 'Checkbox',
+                   c("Value 1" ="1",
+                     "Value 2" ="2",
+                     "Value 3" ="3")),
+# Date Input
+dateInput("date","Date:")    
+
+# glucose
+# UI.R - for user look and feel
+library(shiny)
+shinyUI(pageWithSidebar(
+  # Application Title
+  headerPanel("Diabetes Prediction"),
+  
+  sidebarPanel(
+    # Glucose level
+    numericInput('glucose', 'Glucose mg/dl', 90 , min = 50, max = 400, step = 5),
+    submitButton('Submit')    
+  ),
+  mainPanel(
+    h3('Result Prediction'),
+    h4('You entered'),
+    verbatimTextOutput("inputValue"),
+    h4('Which resulted in a prediction of'),
+    verbatimTextOutput("prediction")
+  )  
+))
+
+# Server. R
+diabetesRisk <- function(glucose) glucose / 200
+
+shinyServer(
+  function(input,output){
+    output$inputValue <- renderPrint({input$glucose})
+    output$prediction <- renderPrint({diabetesRisk(input$glucose)})    
+  }  
+)
+# -------------
+# image
