@@ -1,29 +1,25 @@
+library(shiny)
 library("RSQLite")
 
-
-shinyServer(function(input, output){
-
+shinyServer(function(input, output) {
+  output$contents <- renderTable({
+    
+    # input$file1 will be NULL initially. After the user selects
+    # and uploads a file, it will be a data frame with 'name',
+    # 'size', 'type', and 'datapath' columns. The 'datapath'
+    # column will contain the local filenames where the data can
+    # be found.
+    
+    inFile <- input$file1
+    
+    if (is.null(inFile))
+      return(NULL)
     
     
-    #inFile <- reactive({})
-
+    drv <- dbDriver("SQLite")
+    con <- dbConnect(drv,inFile$datapath)
+    statsData <- dbGetQuery(con, "Select name as NAME , cpu_usage_total as CPU , other_bytes_sent as SENT_DATA , other_bytes_received as RECEIVED_DATA from application_statistics order by cpu_usage_total desc")
     
-      
-    #output$olevel <- renderPrint({menu(input$level)})
-    #output$oDeviceInfo <- renderPrint(deviceInfo)
-    output$platformTable <- renderTable({
-      inFile <- input$file1
-      
-      if (!is.null(inFile)){
-        drv <- dbDriver("SQLite")
-        con <- dbConnect(drv,inFile$datapath)
-        statsData <- dbGetQuery(con, "Select name as NAME , cpu_usage_total as CPU , other_bytes_sent as SENT_DATA , other_bytes_received as RECEIVED_DATA from application_statistics order by cpu_usage_total desc")
-        #output$platformTable <- renderPrint(statsData)
-      }
-    })
-    
-    
-    #output$plot <- renderPlot({ hist(input$file[ , 1]) })
-  }
-  
-)
+    #read.csv(inFile$datapath, header=input$header, sep=input$sep,quote=input$quote)
+  })
+})
