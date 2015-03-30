@@ -18,7 +18,7 @@ shinyUI(
                         
                         # Menu-0
                         tabPanel("Load Data",
-                                 fileInput('file1', 'Load Trepn Profiler log file',
+                                 fileInput('file1', 'Load Trepn Profiler Log file',
                                            accept=c('.db')),
                                  p(strong(h5("Data Status"))),
                                  verbatimTextOutput("isLoaded"),
